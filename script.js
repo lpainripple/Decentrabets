@@ -83,7 +83,7 @@ async function sendTransaction() {
     TransactionType: "Payment",
     Account: wallet.address,
     Amount: xrpl.xrpToDrops("22"),
-    Destination: "rP9tL4n6mz1GpiFkee9a1G3rLYQsToPcg", //address ? Seed is: sEd7anCeSkcs1tTjn8EDxoyGt31ooAc
+    Destination: "rJf1LJ4c5jhJAq9iNh2WBDkbRagw9t7re3", //address ? Seed is: sEd7anCeSkcs1tTjn8EDxoyGt31ooAc
   });
   const max_ledger = prepared.LastLedgerSequence;
   console.log("Prepared transaction instructions:", prepared);
@@ -113,33 +113,19 @@ async function sendTransaction() {
   console.log("client disconnected");
 }
 
-async function main() {
+async function accountInfo() {
   // Define the network client
   console.log("Starting connection");
   const client = new xrpl.Client("wss://s.altnet.rippletest.net:51233");
   await client.connect();
   console.log("Connection stablished");
 
-  //generate a wallet
-  console.log("generating a wallet...");
-  const test_wallet = xrpl.Wallet.generate();
-
-  //read the public key from wallet
-  //wallet generated
-  console.log("wallet generated... retreiving public address: ");
-  const publicKey = test_wallet.publicKey();
-  console.log(publicKey);
-
-  //load the wallet from a known seed
-  console.log("returning wallet information from public key...");
-  const test_wallet2 = xrpl.Wallet.fromSeed(publicKey);
-  const publicKey2 = test_wallet.publicKey();
-  console.log(publicKey2);
-
-  //funding a wallet:
-  const fund_result = await client.fundWallet();
-  const test_wallet3 = fund_result.wallet;
-  console.log(fund_result);
+  const response = await client.request({
+    command: "account_info",
+    account: "rJf1LJ4c5jhJAq9iNh2WBDkbRagw9t7re3",
+    ledger_index: "validated",
+  });
+  console.log(response);
 
   // Disconnect when done
   client.disconnect();
@@ -151,3 +137,29 @@ function test() {
 }
 
 //end of part 2 */
+
+/* wallet 1 info: 
+    {wallet: g, balance: 1000}
+    balance: 1000
+    wallet: g
+    classicAddress: "rJf1LJ4c5jhJAq9iNh2WBDkbRagw9t7re3"
+    privateKey: "EDD12AA78BAB0CCB7A8BCA100A1DCD4D61179FA995DBC001DFC8977C47182D1C0C"
+    publicKey: "EDEB66CEE8634F452C41A7387C8BE75496185B607BCEABF9C819A494566B437D9B"
+    seed: "sEd7XtjizcPqbN5kcsT8bkaJwDgG9u9"
+    address: "rJf1LJ4c5jhJAq9iNh2WBDkbRagw9t7re3"
+    [[Prototype]]: Object
+    [[Prototype]]: Object
+end of wallet 1 info */
+
+/* wallet 2 info: 
+    {wallet: g, balance: 1000}
+    balance: 1000
+    wallet: g
+    classicAddress: "rsZqYGYsiRLk59troxhKYeb5ijgy4hLC9T"
+    privateKey: "ED8C7E534CE7E2918B31EEDF2BF448116ECC104BAD125C55DE81AD77D1D1979365"
+    publicKey: "EDB74308497A01BE9F9BB52B067E5F0E318A369169DA8A1E1A2537E4B83DD25C32"
+    seed: "sEd7a6q3EKgYgN9uu3nzTyLtDbqjRjL"
+    address: "rsZqYGYsiRLk59troxhKYeb5ijgy4hLC9T"
+    [[Prototype]]: Object
+    [[Prototype]]: Object
+end of wallet 1 info */
