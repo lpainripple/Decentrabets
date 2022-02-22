@@ -42,6 +42,7 @@ function getFixtures()
       li.appendChild(document.createTextNode(game.status));
       ul.appendChild(li);
       //status = finished for when game is over and results will be processed
+      //status	string	Possible values of the status field are: 'cancelled', 'postponed', 'not started', 'in progress', 'finished', 'half time', 'suspended'
 
       li = document.createElement("li");
       li.appendChild(document.createTextNode(game.homeName + " x " + game.awayName));
