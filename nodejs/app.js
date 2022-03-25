@@ -5,8 +5,8 @@ const Pool = require('pg').Pool
 const pool = new Pool({
   user: 'decentrabets',
   host: 'decentrabets.ddns.net',
-  database: 'decentrabets',
-  password: 'q1w2e3',
+  database: '',
+  password: '',
   port: 5432,
 })
 
