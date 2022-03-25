@@ -1,13 +1,17 @@
 'use strict';
 
 const Pool = require('pg').Pool
+const fs = require('fs')
+
+let configFile = fs.readFileSync(__dirname+'/config.json')
+let dbconfig = JSON.parse(configFile);
 
 const pool = new Pool({
-  user: 'decentrabets',
-  host: 'decentrabets.ddns.net',
-  database: 'decentrabets',
-  password: 'q1w2e3',
-  port: 5432,
+  user: dbconfig.database.username,
+  host: dbconfig.database.host,
+  database: dbconfig.database.database,
+  password: dbconfig.database.password,
+  port: dbconfig.database.port,
 })
 
 pool.query('SELECT * FROM users ORDER BY id ASC', (error, results) => {
