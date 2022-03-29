@@ -1,24 +1,13 @@
 'use strict';
 
-const Pool = require('pg').Pool
-const fs = require('fs')
+var express = require('express');
 
-let configFile = fs.readFileSync(__dirname+'/config.json')
-let dbconfig = JSON.parse(configFile);
+var app = express();
 
-const pool = new Pool({
-  user: dbconfig.database.username,
-  host: dbconfig.database.host,
-  database: dbconfig.database.database,
-  password: dbconfig.database.password,
-  port: dbconfig.database.port,
+app.get('/', function(req,res) {
+    res.send('<html><body>TESTE</body></html>');
 })
 
-pool.query('SELECT * FROM users ORDER BY id ASC', (error, results) => {
-    if (error) {
-      throw error
-    }
-    results.rows.forEach(element => {
-        console.log(element.email)
-    });
-})
+
+var port = process.env.PORT || 3000;
+app.listen(port);
