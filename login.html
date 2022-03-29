@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="https://unpkg.com/xrpl@2.0.0/build/xrpl-latest-min.js"></script>
+	<script>
+		function login (){
+			var username = document.getElementById("username");
+			var password = document.getElementById("password");
+			
+			window.location.href = "file:///Users/tleite/Desktop/Decentrabets-main/main.html";
+			
+		}
+	</script>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Decentrabets</title>
+  </head>
+  <body style="margin:0px; background-color: #F0F3F4; font-family: Roboto; color: #434343;" onload="loadEvents()">
+    <div style="margin: 0px;z-index: 1000;height:40px;border: 0; background-color:black; float:left; width: 100%; padding-top:15px; padding-left:30px; padding-right: 40px;">
+      <span style="float:left; color:#0A5493;font-size: 24px; font-weight: bold; font-style: italic; text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;">Decentra</span>
+      <span style="float:left; color:#CC0200;font-size: 24px; font-weight: bold; font-style: italic; text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;">bets</span>
+    </div>
+    <div style="float:left; width: 100%; min-height: 100%; padding-left: 20px; padding-top:30px; ">
+		<div style="float:left; text-align:right;width: 200px;">
+			<span>User:</span>
+		</div>
+		<div style="float:left; text-align:left;margin-left:15px;">
+			<input type="text" id="username"/>
+		</div>
+		<div style="clear:left; float:left; text-align:right;width: 200px; margin-top:20px;">
+			<span>Password:</span>
+		</div>
+		<div style="float:left; text-align:left;margin-left:15px; margin-top:20px;">
+			<input type="password" id="password"/>
+		</div>
+		<div style="clear:left; float:left; text-align:right;width: 200px; margin-top:20px;">
+		</div>
+		<div style="float:left; text-align:left;margin-left:15px; margin-top:20px;">
+	        <div style="background-color: #0A5493; padding:8px; border-radius: 3px; width:80px; text-align:center;">
+	          <span style="color: white; font-family: Roboto; cursor:pointer;" onclick=login()> Login</span>
+	        </div>
+		</div>
+		<div style="clear:left; float:left; text-align:right;width: 200px; margin-top:20px;">
+		</div>
+		<div style="float:left; text-align:left;margin-left:15px; margin-top:20px;">
+	        <span style="font-size:14px; font-style:italic;">*If this is your first time, we will create an account for you</span>
+		</div>
+    </div>
+    <div style="margin: 0px;z-index: 1000;height:40px;border: 0; background-color:black; float:left; width: 100%; margin-top:35px; padding-left:30px; padding-right: 40px;">
+	</div>  
+  </body>
+</html>
