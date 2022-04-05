@@ -1,0 +1,9 @@
+{
+  "database": {
+    "host": "decentrabets.ddns.net",
+    "database": "decentrabets",
+    "username": "decentrabets",
+    "password": "q1w2e3",
+    "port": "5432"
+  }
+}
