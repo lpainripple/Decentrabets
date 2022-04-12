@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,minimum-scale=1" />
+    <title>Register</title>
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.7.1/css/all.css"
+    />
+    <link href="./style.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <div class="login">
+      <h1>
+        <span
+          style="
+            float: left;
+            color: #0a5493;
+            font-size: 24px;
+            font-weight: bold;
+            font-style: italic;
+            text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
+            margin-left: 26%;
+          "
+          >Account&nbsp;
+        </span>
+        <span
+          style="
+            float: left;
+            color: #cc0200;
+            font-size: 24px;
+            font-weight: bold;
+            font-style: italic;
+            text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
+          "
+        >
+          Creation</span
+        >
+      </h1>
+      <form action="/register" method="POST">
+        <label for="username">
+          <i class="fas fa-user"></i>
+        </label>
+        <input
+          type="text"
+          name="username"
+          placeholder="username"
+          id="username"
+          required
+        />
+        <label for="email">
+            <i class="fas fa-user"></i>
+          </label>
+          <input
+            type="email"
+            name="email"
+            placeholder="email"
+            id="email"
+            required
+          />
+        <label for="password">
+          <i class="fas fa-lock"></i>
+        </label>
+        <input
+          type="password"
+          name="password"
+          placeholder="password"
+          id="password"
+          required
+        />
+        <label for="confirmepassword">
+          <i class="fas fa-lock"></i>
+        </label>
+        <input
+          type="password"
+          name="confirmepassword"
+          placeholder="Confirm password"
+          id="confirmepassword"
+          required
+        />
+        <input type="submit" value="Create account" />
+        <form action="/createaccount" method="get"></form>
+        <a href="/login">Login</a>
+      </form>
+    </div>
+  </body>
+</html>

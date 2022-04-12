@@ -4,7 +4,7 @@ USE Decentrabets;
 
 CREATE TABLE Users (
     user_name       	varchar(40),
-    pass       			varchar(40) NOT NULL,
+    pass       			varchar(250) NOT NULL,
     email				varchar(100),
     account_address 	varchar(100),
     balance   			NUMERIC (15, 8),
