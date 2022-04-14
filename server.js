@@ -52,7 +52,7 @@ app.get("/login", function (request, response) {
 });
 
 app.post("/login", function (request, response) {
-  let username = request.body.username;
+  let username = request.body.username.toLowerCase();
   let password = request.body.password;
 
   console.log(`attempting to login for user: ${username}...`);
@@ -91,14 +91,21 @@ app.post("/login", function (request, response) {
 
 /********************************** REGISTER ************************************* */
 app.get("/register", function (request, response) {
-  response.render("register.ejs");
+  if (request.session.loggedin == true) {
+    console.log(
+      `user ${request.session.username} tried to access register page... already logged in`
+    );
+    response.redirect("/home");
+  } else {
+    response.render("register.ejs");
+  }
 });
 
 app.post("/register", async function (request, response) {
   //able to access because of app.use(expres...
   try {
     const hashedPassword = await bcrypt.hash(request.body.password, 10);
-    const username = request.body.username;
+    const username = request.body.username.toLowerCase();
     const email = request.body.email;
     //const password = hashedPassword;
     const password = request.body.password;
@@ -108,18 +115,23 @@ app.post("/register", async function (request, response) {
       [username, password, email],
       (error, results) => {
         if (error) {
-          throw error;
+          if (error.code == 23505) {
+            console.log("user already exists...");
+            response.send(`The user ${username} already exists`);
+          } else {
+            throw error;
+          }
+        } else {
+          console.log("user added to database:" + results.response);
+          console.log(username);
+          console.log(password);
+          console.log(email);
+          console.log("Finished with no errors...");
+          console.log(`User ${request.body.username} registered.`);
+
+          //Redirect to homepage
+          response.redirect("/login");
         }
-        console.log("user added to database:" + results.response);
-
-        console.log(username);
-        console.log(password);
-        console.log(email);
-        console.log("Finished with no errors...");
-        console.log(`User ${request.body.username} registered.`);
-
-        //Redirect to homepage
-        response.redirect("/login");
       }
     );
 
@@ -134,7 +146,7 @@ app.post("/register", async function (request, response) {
 /********************************** HOME ************************************* */
 
 app.get("/home", function (request, response) {
-  response.render("games.ejs");
+  response.render("games.ejs", {user: request.session.username});
   // response.send(
   //   `The user ${request.session.username} is logged in: ${request.session.loggedin}`
   // );
