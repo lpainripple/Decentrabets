@@ -95,7 +95,7 @@
     <menu>
       <button>New</button>
       <button>test</button>
-      <label class="menuright" style="background-color: transparent;"> Hi Person </label>
+      <label class="menuright" style="background-color: transparent;"> Hi <%= user %>  </label>
       <button class="menuright">My account</button>
       <button class="save">Save</button>
     </menu>
@@ -111,6 +111,7 @@
       <ul id="gamesUL">
         <li>
           <p>click the button to get the game standing for Champions League</p>
+          <%= games %>
         </li>
       </ul>
     </main>

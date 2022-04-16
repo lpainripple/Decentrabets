@@ -7,6 +7,7 @@ const fs = require("fs");
 const session = require("express-session");
 const flash = require("express-flash");
 const path = require("path");
+const ejs = require('ejs');
 
 let configFile = fs.readFileSync(__dirname + "/config.json");
 let dbconfig = JSON.parse(configFile);
@@ -20,6 +21,7 @@ const pool = new Pool({
   //   port: dbconfig.database.port,
   user: "decentrabets",
   host: "decentrabets.ddns.net",
+
   database: "decentrabets",
   password: "q1w2e3",
   port: "5432",
@@ -146,13 +148,53 @@ app.post("/register", async function (request, response) {
 /********************************** HOME ************************************* */
 
 app.get("/home", function (request, response) {
-  response.render("games.ejs", {user: request.session.username});
-  // response.send(
-  //   `The user ${request.session.username} is logged in: ${request.session.loggedin}`
-  // );
+
+  var games = new Array();
+  var idGameList = new Array();
+  var idHomeList = new Array();
+  var idAwayList = new Array();
+  var i = 0;
+
+  pool.query(
+    "select * from games where end_datetime <= current_timestamp ",
+    (error, results) => {
+      if (error) {
+        throw error;
+      }
+      results.rows.forEach((element) => {
+        console.log(`Found game: ${element.game_title} in the database`);
+        var game = {
+          game_id: element.game_id,
+          championship: element.championship,
+          category: element.category,
+          game_title: element.game_title,
+          team1: element.team1,
+          team2: element.team2,
+          begin_datetime: element.begin_datetime,
+          end_datetime: element.end_datetime,
+          status: element.status,
+          winning_team: element.winning_team
+        }
+
+        games.push(game);
+        
+      });
+    }
+  );
+
+  response.render("mainpage.ejs", {user: request.session.username, games: games});
+
 });
 
 /********************************** HOME END ************************************* */
+
+/********************************** FIX ************************************* */
+app.get("/pastgames", function (request, response) {
+
+    
+
+});
+/********************************** END FIX ************************************* */
 
 const port = 3000;
 app.listen(port, function (request, response) {
