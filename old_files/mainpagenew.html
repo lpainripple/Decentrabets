@@ -39,7 +39,8 @@
       }
 
       menu {
-        background-color: darkblue;
+        background-color: #435165;
+;
         color: #fff;
         grid-column: 2 / -1;
         display: flex;
@@ -51,6 +52,11 @@
       .save {
         background-color: #d6336c;
         margin-left: auto;
+      }
+
+      .menuright {
+        background-color: #d6336c;
+        text-align: right;
       }
 
       section {
@@ -67,7 +73,7 @@
         display: inline-block;
         font-size: 16px;
         font-weight: bold;
-        background-color: #5f3dc4;
+        background-color: teal;
         border: none;
         cursor: pointer;
         color: white;
@@ -89,14 +95,25 @@
     <menu>
       <button>New</button>
       <button>test</button>
+      <label class="menuright" style="background-color: transparent;"> Hi Person </label>
+      <button class="menuright">My account</button>
       <button class="save">Save</button>
     </menu>
     <section>
-      <div class="item">Games</div>
+      <div class="item">Ongoing Games</div>
+      <div class="item">Past Games</div>
       <div class="item">My bets</div>
-      <div class="item">My account</div>
     </section>
-    <main>Content</main>
+    <main>    
+      <button id="btGames" onclick="getFixtures()">Game standings</button>
+      <br />
+      <label id="login"></label>
+      <ul id="gamesUL">
+        <li>
+          <p>click the button to get the game standing for Champions League</p>
+        </li>
+      </ul>
+    </main>
     <aside>Additional info</aside>
   </body>
 </html>
