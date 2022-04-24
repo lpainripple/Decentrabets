@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mainpage</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: sans-serif;
+        color: #343a40;
+        font-size: 24px;
+        height: 100vh;
+        text-align: center;
+        font-weight: bold;
+
+        display: grid;
+        grid-template-columns: 80px 400px 1fr 250px;
+        grid-template-rows: 80px 1fr;
+      }
+
+      nav,
+      section,
+      main,
+      aside {
+        padding-top: 24px;
+      }
+
+      nav {
+        background-color: black;
+        color: white;
+        grid-row: 1 / -1;
+      }
+
+      menu {
+        background-color: #435165;
+        color: #fff;
+        grid-column: 2 / -1;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 0 40px;
+      }
+
+      .save {
+        background-color: #d6336c;
+        margin-left: auto;
+      }
+
+      .menuright {
+        background-color: #d6336c;
+        text-align: right;
+      }
+
+      section {
+        background-color: #e9ecef;
+        flex-direction: column;
+        gap: 40px;
+      }
+
+      aside {
+        background-color: #e9ecef;
+      }
+
+      button {
+        display: inline-block;
+        font-size: 16px;
+        font-weight: bold;
+        background-color: teal;
+        border: none;
+        cursor: pointer;
+        color: white;
+        padding: 8px 12px;
+      }
+
+      .item {
+        background-color: #adb5bd;
+        height: 80px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <nav>Home</nav>
+    <menu>
+      <button>New</button>
+      <button>test</button>
+      <label class="menuright" style="background-color: transparent">
+        Hi <%= user %>
+      </label>
+      <button class="menuright">My account</button>
+      <button class="save">Save</button>
+    </menu>
+    <section>
+      <div class="item">Ongoing Games</div>
+      <div class="item">Past Games</div>
+      <div class="item">My bets</div>
+    </section>
+    <main>
+      <button id="btGames" onclick="getFixtures()">Game standings</button>
+      <br />
+      <label id="login"></label>
+      <ul id="gamesUL">
+        <li>
+          <p>click the button to get the game standing for Champions League</p>
+          <%= games %>
+        </li>
+      </ul>
+    </main>
+    <aside>Additional info</aside>
+  </body>
+</html>

@@ -5,5 +5,9 @@
     "username": "decentrabets",
     "password": "q1w2e3",
     "port": "5432"
+  },
+
+  "session": {
+    "secret": "7cfdf87a-2e82-4ec5-90ae-1223452d1373"
   }
 }

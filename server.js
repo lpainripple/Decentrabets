@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const bcrypt = require("bcrypt");
+//const bcrypt = require("bcrypt");
 const res = require("express/lib/response");
 const Pool = require("pg").Pool;
 const fs = require("fs");
@@ -9,26 +9,25 @@ const flash = require("express-flash");
 const path = require("path");
 
 let configFile = fs.readFileSync(__dirname + "/config.json");
-let dbconfig = JSON.parse(configFile);
+let config = JSON.parse(configFile);
 
 //put in the config file
 const pool = new Pool({
-  //   user: dbconfig.database.username,
-  //   host: dbconfig.database.host,
-  //   database: dbconfig.database.database,
-  //   password: dbconfig.database.password,
-  //   port: dbconfig.database.port,
-  user: "decentrabets",
-  host: "decentrabets.ddns.net",
-  database: "decentrabets",
-  password: "q1w2e3",
-  port: "5432",
+  user: config.database.username,
+  host: config.database.host,
+  database: config.database.database,
+  password: config.database.password,
+  port: config.database.port,
+  // user: "decentrabets",
+  // host: "decentrabets.ddns.net",
+  // database: "decentrabets",
+  // password: "q1w2e3",
+  // port: "5432",
 });
 
 app.use(
   session({
-    //put in the config file
-    secret: "7cfdf87a-2e82-4ec5-90ae-1223452d1373",
+    secret: config.session.secret,
     resave: true,
     saveUninitialized: true,
   })
@@ -38,12 +37,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "/views/static")));
 
+//sets view engine to read ejs
 app.set("view-engine", "ejs");
 
 //app.use(express.urlencoded({extended: false}));
 
 app.get("/", function (request, response) {
-  response.render("index.ejs", { test: "test1" });
+  response.render("index.ejs", { test: "This is how you send data to html" });
 });
 
 /********************************** LOGIN ************************************* */
@@ -61,7 +61,7 @@ app.post("/login", function (request, response) {
     console.log(`Input - username: ${username} / password: ${password}`);
     console.log(`running query...`);
     pool.query(
-      "SELECT * FROM users where user_name = $1 and pass = $2",
+      "SELECT LOWER(user_name), pass FROM users where user_name = $1 and pass = $2",
       [username, password],
       (error, results) => {
         if (error) {
@@ -74,7 +74,9 @@ app.post("/login", function (request, response) {
           //Authentication
           request.session.loggedin = true;
           request.session.username = username;
-          console.log("session initialized...");
+          console.log(
+            `session initialized for user ${username}... redirecting to home page`
+          );
           //Redirect to homepage
           response.redirect("/home");
         } else {
@@ -101,17 +103,18 @@ app.get("/register", function (request, response) {
   }
 });
 
+//this function is asyncronous in case an encryption method is used
 app.post("/register", async function (request, response) {
   //able to access because of app.use(expres...
   try {
-    const hashedPassword = await bcrypt.hash(request.body.password, 10);
+    //const hashedPassword = await bcrypt.hash(request.body.password, 10);
     const username = request.body.username.toLowerCase();
     const email = request.body.email;
     //const password = hashedPassword;
     const password = request.body.password;
 
     pool.query(
-      "insert into USERS (user_name, pass, account_address, email, balance) values ($1, $2, '', $3, 0);",
+      "INSERT into USERS (user_name, pass, account_address, email, balance) values ($1, $2, '', $3, 0);",
       [username, password, email],
       (error, results) => {
         if (error) {
@@ -123,11 +126,9 @@ app.post("/register", async function (request, response) {
           }
         } else {
           console.log("user added to database:" + results.response);
-          console.log(username);
-          console.log(password);
-          console.log(email);
-          console.log("Finished with no errors...");
-          console.log(`User ${request.body.username} registered.`);
+          console.log(
+            `The user was added: ${username} and password used: ${password} with the email: ${email}`
+          );
 
           //Redirect to homepage
           response.redirect("/login");
@@ -143,16 +144,48 @@ app.post("/register", async function (request, response) {
 });
 /********************************** REGISTER END ************************************* */
 
-/********************************** HOME ************************************* */
+/*********************************** HOME ************************************* */
 
 app.get("/home", function (request, response) {
-  response.render("games.ejs", {user: request.session.username});
-  // response.send(
-  //   `The user ${request.session.username} is logged in: ${request.session.loggedin}`
-  // );
+  var games = new Array();
+
+  pool.query(
+    "select * from games where end_datetime <= current_timestamp ",
+    (error, results) => {
+      if (error) {
+        throw error;
+      }
+      results.rows.forEach((element) => {
+        console.log(`Found game: ${element.game_title} in the database`);
+        var game = {
+          game_id: element.game_id,
+          championship: element.championship,
+          category: element.category,
+          game_title: element.game_title,
+          team1: element.team1,
+          team2: element.team2,
+          begin_datetime: element.begin_datetime,
+          end_datetime: element.end_datetime,
+          status: element.status,
+          winning_team: element.winning_team,
+        };
+
+        games.push(game);
+      });
+    }
+  );
+
+  response.render("mainpage.ejs", {
+    user: request.session.username,
+    games: games,
+  });
 });
 
 /********************************** HOME END ************************************* */
+
+/********************************** FUNCTIONS ************************************* */
+
+/********************************** FUNCTIONS END ************************************* */
 
 const port = 3000;
 app.listen(port, function (request, response) {
