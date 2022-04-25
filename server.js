@@ -7,7 +7,7 @@ const fs = require("fs");
 const session = require("express-session");
 const flash = require("express-flash");
 const path = require("path");
-const ejs = require('ejs');
+const ejs = require("ejs");
 
 let configFile = fs.readFileSync(__dirname + "/config.json");
 let config = JSON.parse(configFile);

@@ -112,7 +112,7 @@
       <ul id="gamesUL">
         <li>
           <p>click the button to get the game standing for Champions League</p>
-          <%= games %>
+          <% games.forEach((element) => { %> <%= element.game_title %> <% }); %>
         </li>
       </ul>
     </main>
