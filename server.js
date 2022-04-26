@@ -5,7 +5,8 @@ const res = require("express/lib/response");
 const Pool = require("pg").Pool;
 const fs = require("fs");
 const session = require("express-session");
-const flash = require("express-flash");
+//const flash = require("express-flash");
+const flash = require("connect-flash");
 const path = require("path");
 const ejs = require("ejs");
 
@@ -31,12 +32,14 @@ app.use(
     secret: config.session.secret,
     resave: true,
     saveUninitialized: true,
+    //cookie:
   })
 );
 app.use(express.json());
 //allow us to access request variables in the post methods
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "/views/static")));
+app.use(flash());
 
 //sets view engine to read ejs
 app.set("view-engine", "ejs");
@@ -49,7 +52,7 @@ app.get("/", function (request, response) {
 
 /********************************** LOGIN ************************************* */
 app.get("/login", function (request, response) {
-  response.render("login.ejs");
+  response.render("login.ejs", { message: request.flash("message") });
 });
 
 app.post("/login", function (request, response) {
@@ -81,7 +84,9 @@ app.post("/login", function (request, response) {
           //Redirect to homepage
           response.redirect("/home");
         } else {
-          response.send("Incorrect username or password");
+          request.flash("message", "Incorrect username or password");
+          response.redirect("/login");
+          //response.send("Incorrect username or password");
         }
       }
     );
@@ -100,7 +105,7 @@ app.get("/register", function (request, response) {
     );
     response.redirect("/home");
   } else {
-    response.render("register.ejs");
+    response.render("register.ejs", { message: request.flash("message") });
   }
 });
 
@@ -115,13 +120,15 @@ app.post("/register", async function (request, response) {
     const password = request.body.password;
 
     pool.query(
-      "INSERT into USERS (user_name, pass, account_address, email, balance) values ($1, $2, '', $3, 0);",
+      "INSERT into USERS (user_name, pass, address, email, balance) values ($1, $2, '', $3, 0);",
       [username, password, email],
       (error, results) => {
         if (error) {
           if (error.code == 23505) {
             console.log("user already exists...");
-            response.send(`The user ${username} already exists`);
+            request.flash("message", "This user already exists");
+            response.redirect("/register");
+            //response.send(`The user ${username} already exists`);
           } else {
             throw error;
           }

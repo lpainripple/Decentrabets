@@ -3,12 +3,10 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,minimum-scale=1" />
-    <title>Register</title>
+    <title>Login</title>
     <div style="text-align: center">
-      <div style="display: inline-block" style="color: white">
-        <% if (message.length > 0) { %>
-        <div style="color: white"><%= message %></div>
-        <% } %>
+      <div style="display: inline-block">
+        <p style="color: white">Incorrect password</p>
       </div>
     </div>
     <link
@@ -28,10 +26,10 @@
             font-weight: bold;
             font-style: italic;
             text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
-            margin-left: 26%;
+            margin-left: 31%;
           "
-          >Account&nbsp;
-        </span>
+          >Decentra</span
+        >
         <span
           style="
             float: left;
@@ -41,29 +39,18 @@
             font-style: italic;
             text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
           "
-        >
-          Creation</span
+          >bets</span
         >
       </h1>
-      <form action="/register" method="POST">
+      <form action="/login" method="post">
         <label for="username">
           <i class="fas fa-user"></i>
         </label>
         <input
           type="text"
           name="username"
-          placeholder="username"
+          placeholder="Username"
           id="username"
-          required
-        />
-        <label for="email">
-          <i class="fas fa-user"></i>
-        </label>
-        <input
-          type="text"
-          name="email"
-          placeholder="email"
-          id="email"
           required
         />
         <label for="password">
@@ -72,27 +59,18 @@
         <input
           type="password"
           name="password"
-          placeholder="password"
+          placeholder="Password"
           id="password"
           required
         />
-        <label for="confirmepassword">
-          <i class="fas fa-lock"></i>
-        </label>
-        <input
-          type="password"
-          name="confirmepassword"
-          placeholder="Confirm password"
-          id="confirmepassword"
-          required
-        />
-        <input type="submit" value="Create account" />
-        <form action="/createaccount" method="get"></form>
+        <input type="submit" value="Login" />
       </form>
     </div>
     <div style="text-align: center">
       <div style="display: inline-block">
-        <a href="/login" style="color: white">Return to login page</a>
+        <a href="/register" style="color: white"
+          >Don't have an account? Click here.</a
+        >
       </div>
     </div>
   </body>
