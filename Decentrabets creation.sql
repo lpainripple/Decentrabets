@@ -31,20 +31,23 @@ select * from USERS
 
 CREATE TABLE Games (
     game_id        		SERIAL PRIMARY KEY,
-    championship       	varchar(40) not null,
+    game_external_id    varchar(40) not null,
+    home_team_id        varchar(40) not null,
+	home_team_name      varchar(40) not null,
+	away_team_id        varchar(40) not null,
+	away_team_name      varchar(40) not null,
+	season_name       	varchar(40) not null,
     category         	varchar(40),
-    game_title   		varchar(40),
-    team1        		varchar(40) not null,
-    team2         		varchar(40) not null,
-    begin_datetime   	timestamp,
-    end_datetime        timestamp,
-    status         		varchar(40),
-    winning_team		varchar (40)
+    score_home          NUMERIC(4),
+	score_home_pen_goals NUMERIC(4),
+	score_away          NUMERIC(4),
+	score_away_pen_goals NUMERIC(4),
+	begin_datetime   	timestamp,
+    status         		varchar(40)
 );
 
-insert into Games (championship, category, game_title, team1, team2, begin_datetime, end_datetime, status, winning_team)
-values ('champions league', 'soccer', 'Semifinal - Chelsea vs Real Madrid', 'Chelsea', 'Real Madrid', current_timestamp, current_timestamp  + interval '3 hours', 'ongoing', null)
-	,('champions league', 'soccer', 'Semifinal - Bayern vs Liverpool', 'Bayern', 'Liverpool', current_timestamp - interval '3 hours', current_timestamp, 'finished', 'Bayern')
+insert into Games (game_external_id, home_team_id, home_team_name, away_team_id, away_team_name, season_name, category, score_home, score_home_pen_goals, score_away, score_away_pen_goals, begin_datetime, status)
+values ('243652', '1400', 'Man City', '102', 'Villareal', 'UEFA Champions League - 2021/2022', 'soccer', 0, 0, 0, 0, '2022-04-13 19:00', 'not started')
 
 select * from games
 

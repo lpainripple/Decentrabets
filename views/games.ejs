@@ -1,19 +1,180 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>DecentraBet</title>
-    <link rel="stylesheet" href="css/style.css" />
-    <script type="application/javascript" src="scripts.js"></script>
+  <script src="https://unpkg.com/xrpl@2.0.0/build/xrpl-latest-min.js"></script>
+	
+	<script>
+		function showAddNewBet(eventid){
+			document.getElementById("divNewBet" + eventid).style.display = "block";
+			document.getElementById("divExistingBets" + eventid).style.display = "none";
+		}
+		
+		function showExistingBets(eventid){
+			document.getElementById("divNewBet" + eventid).style.display = "none";
+			document.getElementById("divExistingBets" + eventid).style.display = "block";
+		}
+		
+		function showPreviousGames(){
+			toggleVisibility('previousGames');
+		};
+		
+		function updateBet(eventId) {
+			var bet = document.getElementById('betEvent' + eventId).value;
+			
+			if (isNaN(bet)) {
+				bet = 0;
+			}
+			
+			var multiplier = document.getElementById('multiplierEvent' + eventId).value;
+			
+			var returnBet = parseInt(bet) + (bet * multiplier);
+			
+			document.getElementById('returnEvent' + eventId).innerHTML = returnBet;
+		}
+		
+		function toggleVisibility(id) {
+			var display = document.getElementById(id).style.display;
+			
+			if (display == "block") {
+				display = "none";
+			} else {
+				display = "block";
+			}
+			
+			document.getElementById(id).style.display = display;
+		}
+	</script>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Decentrabets</title>
   </head>
-  <body>
-    <h1>Hi <%= user %></h1>
-    <button id="btGames" onclick="getFixtures()">Game standings</button>
-    <br />
-    <label id="login"></label>
-    <ul id="gamesUL">
-      <li>
-        <p>click the button to get the game standing for Champions League</p>
-      </li>
-    </ul>
+  <body style="margin:0px; background-color: #F0F3F4; font-family: Roboto; color: #434343;">
+    <div style="margin: 0px;z-index: 1000;height:40px;border: 0; background-color:black; float:left; width: 100%; padding-top:15px; padding-left:30px; padding-right: 40px;">
+      <span style="float:left; color:#0A5493;font-size: 24px; font-weight: bold; font-style: italic; text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;">Decentra</span>
+      <span style="float:left; color:#CC0200;font-size: 24px; font-weight: bold; font-style: italic; text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;">bets</span>
+      <div style="float:right; background-color: #0A5493; margin-right: 100px; padding:10px; margin-top:-7px; border-radius: 3px;">
+        <span style="color: white; font-family: Roboto; "> Login</span>
+      </div>
+    </div>
+    <div style="float:left; width: 100%; min-height: 100%; padding-left: 20px; padding-top:30px;">
+        <span style="float:left; font-size: 26px; color: #434343">Betting Events</span>
+        <span id="previousGamesButton" style="float:left; font-size: 16px; color: #434343; margin-left: 250px; font-style: italic; margin-top:10px; cursor:pointer;" onclick="showPreviousGames()">Show Previous games</span>
+        
+		<div id="previousGames" style="display:none;">
+  	</div>
+		<div id="events" >
+      <% for(var i=0; i < games.length; i++) { %>
+        <!--Div evento -->
+				 <div style="float:left; clear:left; border: 1px solid #9b9b9b; background-color: white; width: 600px; margin-top:30px; padding-bottom:15px;">
+					<!-- Div Status -->
+					<div style="float:left; margin-top:8px; padding:3px; padding-left:10px; background-color:<%= games[i].status_color %>; width:80px; text-align:center; ">
+						<span style="font-size: 12px; color: white; padding-top:2px; font-style: italic;" > <%= games[i].status %></span>
+					</div>
+					<!--Div header-->
+					<div style="float:left; clear:left; padding:10px;">
+						<img src="static/img/soccer.png" width="20" height="20" style="float:left; clear:left;" />
+						<span style="float:left; font-size: 16px; padding-left:5px; padding-top:2px;" > <%= games[i].season_name %></span>
+						<span style="float:left; font-size: 16px; margin-left:115px; padding-top:2px;" > <%= games[i].begin_datetime %></span>
+					</div>
+					<!--Div score-->
+					<div style="float:left; clear:left; width:100%; margin-top:5px">
+						<span style="float:left; font-size: 20px; padding-left:5px; padding-top:2px; text-align:right; width:250px;" > <%= games[i].home_team_name %></span>
+						<span style="float:left; font-size: 20px; padding-left:5px; padding-top:2px;" > <%= games[i].score_home %></span>
+						<span style="float:left; font-size: 16px; padding-left:5px; padding-top:6px;" >X</span>
+						<span style="float:left; font-size: 20px; padding-left:5px; padding-top:2px;" > <%= games[i].score_away %></span>				
+						<span style="float:left; font-size: 20px; padding-left:5px; padding-top:2px;" > <%= games[i].away_team_name %></span>
+					</div>
+					<!--Div score-->
+					<div style="float:left; clear:left; width:100%; margin-top:25px; font-size:14px; border-top:1px dashed #434343;padding-top:10px;">
+						<span style="float:left; padding-left:5px; padding-top:2px; margin-left:15px; cursor:pointer;" onclick="showAddNewBet('0')" >+ Add New Bet</span>
+						<span style="float:left; margin-left:325px; padding-top:2px; cursor:pointer;" onclick="showExistingBets('1')" >Existing Bets (5)</span>
+				  </div>
+					<div id="divNewBet0" style="float:left; clear:left; width:100%; margin-top:25px; font-size:14px; display:none;">
+						<div style="clear:left;float:left;">
+							<span style="float:left; padding-left:5px; padding-top:2px; margin-left:15px;" >Winner</span>
+							<select style="float:left; margin-left:25px; padding-top:2px; cursor:pointer;" id="winnerEvent0">
+								<option value=""> <%= games[i].home_team_name %></option>
+								<option value=""> <%= games[i].away_team_name %></option>
+ 			    	    	</select>
+						</div>
+						<div style="clear:left;float:left; margin-top:5px;">
+							<span style="float:left; padding-left:5px; padding-top:2px; margin-left:15px;" >Bet</span>
+							<input style="float:left; margin-left:47px;width:50px;" type="text" id="betEvent0" onchange="updateBet('0')"/>
+							<span style="float:left; padding-left:5px; padding-top:2px; font-style:italic;" >xrp</span>
+						</div>
+						<div style="clear:left;float:left; margin-top:5px;">
+							<span style="float:left; padding-left:5px; padding-top:2px; margin-left:15px;">Multiplier</span>
+							<select style="float:left; margin-left:10px; padding-top:2px; cursor:pointer;" id="multiplierEvent0" onchange="updateBet('0')">
+								<option value="0.25">0.25</option>
+								<option value="0.5">0.5</option>
+								<option value="0.75">0.75</option>
+								<option value="1" selected>1</option>
+								<option value="1.25">1.25</option>
+								<option value="1.5">1.5</option>
+								<option value="1.75">1.75</option>
+								<option value="2">2</option>
+								<option value="2.25">2.25</option>
+								<option value="2.5">2.5</option>
+								<option value="2.75">2.75</option>
+								<option value="3">3</option>
+							</select>
+						</div>
+						<div style="clear:left;float:left; margin-top:5px;">
+							<span style="float:left; padding-left:5px; padding-top:2px; margin-left:15px; font-style:italic;" >You will receive</span>
+							<span style="float:left; padding-left:5px; padding-top:2px; font-style:italic; font-weight:bold;" id="returnEvent0" >0</span>
+							<span style="float:left; padding-left:5px; padding-top:2px; font-style:italic; font-weight:bold;" >xrp</span>
+						</div>
+						<div style="clear:left;float:left; margin-top:5px;">
+							<span style="float:left; padding-left:5px; padding-top:2px; margin-left:15px; font-style:italic; font-size:10px;">*The amount you receive includes what you bet plus earnings based on selected multiplier.</span>
+						</div>
+      		  			<div style="float:left; clear:left; background-color: #0A5493; padding:10px; margin-top:10px; margin-left:15px; border-radius: 3px; width:50px; cursor:pointer;text-align:center;">
+        					<span style="color: white; font-family: Roboto;">Bet</span>
+      		  			</div>
+					</div>
+					<div id="divExistingBets0" style="float:left; clear:left; width:100%; margin-top:25px; font-size:14px; display:none;">
+						<div style="float:left; clear:left; width:510px; height: 15px; padding:5px; background-color:#F0F3F4; border-bottom:1px solid gray; font-size:12px; margin-left:15px;">
+					 		<span style="float:left; margin-left:10px; width:60px;">Status</span>
+					 		<span style="float:left; width:50px;">User</span>
+					 		<span style="float:left; width:100px;">Winner</span>
+					 		<span style="float:left; width:70px;">They bet</span>
+					 		<span style="float:left; width:70px;">You bet</span>
+					 		<span style="float:left; width:70px;">You receive</span>
+						</div> 
+						<div style="float:left; clear:left; width:510px; height: 15px; padding:5px; border-bottom:1px solid gray; font-size:12px; margin-left:15px; font-style:italic;">
+					 		<span style="float:left; margin-left:10px; width:60px;">open</span>
+					 		<span style="float:left; width:50px;">tleite</span>
+					 		<span style="float:left; width:100px;"> <%= games[i].home_team_name %></span>
+					 		<span style="float:left; width:70px;">2</span>
+					 		<span style="float:left; width:70px;">4</span>
+					 		<span style="float:left; width:70px;">6</span>
+					 	  <span style="float:left; width:75px;cursor:pointer; text-decoration:underline;text-align:center;">take</span>
+						</div>
+						<div style="float:left; clear:left; width:510px; height: 15px; padding:5px; border-bottom:1px solid gray; font-size:12px; margin-left:15px; font-style:italic;">
+					 		<span style="float:left; margin-left:10px; width:60px;">accepted</span>
+					 		<span style="float:left; width:50px;">tleite</span>
+					 		<span style="float:left; width:100px;"> <%= games[i].home_team_name %></span>
+					 		<span style="float:left; width:70px;">2</span>
+					 		<span style="float:left; width:70px;">4</span>
+					 		<span style="float:left; width:70px;">6</span>
+            </div>
+						<div style="float:left; clear:left; width:510px; height: 15px; padding:5px; border-bottom:1px solid gray; font-size:12px; margin-left:15px; font-style:italic;">
+					 		<span style="float:left; margin-left:10px; width:60px;">open</span>
+              <span style="float:left; width:50px;">tleite</span>
+					 		<span style="float:left; width:100px;"> <%= games[i].home_team_name %></span>
+					 		<span style="float:left; width:70px;">2</span>
+					 		<span style="float:left; width:70px;">4</span>
+					 		<span style="float:left; width:70px;">6</span>
+					 		<span style="float:left; width:75px;cursor:pointer; text-decoration:underline;text-align:center;">take</span>
+						</div>
+					</div>
+		         </div>     
+      
+             <% }; %>
+		</div>
+		
+    </div>
+    <div style="margin: 0px;z-index: 1000;height:40px;border: 0; background-color:black; float:left; width: 100%; margin-top:35px; padding-left:30px; padding-right: 40px;">
+	</div>  
   </body>
 </html>
