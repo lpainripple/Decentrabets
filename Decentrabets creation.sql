@@ -5,13 +5,17 @@ USE Decentrabets;
 CREATE TABLE Users (
     user_name       	varchar(40) CONSTRAINT firstkey PRIMARY KEY,
     pass       			varchar(250) NOT NULL,
-    account_address 	varchar(100),
+    address				varchar(100),
+    classicAddress 		varchar(100),
+    privateKey			varchar(100),
+    publicKey			varchar(100),
+    seed				varchar(100),
     email 				varchar(100),
     balance   			NUMERIC (15, 6)
     );
    
     
-INSERT INTO Users (user_name, pass, account_address, balance)
+INSERT INTO Users (user_name, pass, address, balance)
 VALUES ('Tiago', 'asdf', '1029394', 52344.12345678),
 		('Luis', 'asdf', 'aslkdjghlaksdjgh', 123.123),
 		('Anderson', 'asdf', 'oqwiueyroiwqueaskjdhflkasjdhfxzlxcjhvljkxcvxz', 54321.544321),
@@ -21,6 +25,7 @@ VALUES ('Tiago', 'asdf', '1029394', 52344.12345678),
 
 select * from USERS
 --delete from users where user_name = 'test'
+
 
 ----------------------------------------------------------------------------------------------------------------------
 
@@ -61,6 +66,7 @@ values ('Luis', 'sadfasdfsdfasdfasdfasdfasdfasdfasdf', '10', current_timestamp)
 
 select * from transactions
 
+
 ----------------------------------------------------------------------------------------------------------------------
 
 CREATE TABLE Bets (
@@ -85,8 +91,8 @@ CREATE TABLE Bets (
     );
     
 insert into bets (bet_initiator, bet_taker, game_id, bet_initiator_team_pick, xrp_amount, expiration_date, bet_status, bet_multiplication)
-values ('Luis', 'Toma', 2, 'Chelsea', 20,  current_timestamp - interval '3 days', 'active', 1)
-,values ('Luis', null, 2, 'Chelsea', 30,  current_timestamp - interval '3 days', 'active', 1)
+values ('Luis', 'Marcel', 2, 'Chelsea', 20,  current_timestamp - interval '3 days', 'active', 1)
+,		('Luis', null, 2, 'Chelsea', 30,  current_timestamp - interval '3 days', 'active', 1)
 
 
 select * from bets

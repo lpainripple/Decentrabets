@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="https://unpkg.com/xrpl@2.0.0/build/xrpl-latest-min.js"></script>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Decentra bets main page</title>
+    <link href="stylemain.css" rel="stylesheet" />
+  </head>
+  <body>
+    <h1>Current bets</h1>
+    <button onclick="generateWallet()">Generate and fund wallet</button>
+    <button onclick="retrieveWallet()">Retrieve Wallet</button>
+    <button onclick="verifyTransaction()">Verify transaction</button>
+    <button onclick="sendTransaction()">Send transaction</button>
+    <button onclick="accountInfo()">Get account info</button>
+    <div class="leftside">
+      <h2>Team 1</h2>
+      <img
+        class="teamimage"
+        src="https://upload.wikimedia.org/wikipedia/en/thumb/0/05/Flag_of_Brazil.svg/320px-Flag_of_Brazil.svg.png"
+      />
+      <div class="openbets">
+        <h3>Open bets</h3>
+        <p class="bets">Chris 105</p>
+        <p class="bets">Roxanne 34</p>
+      </div>
+      <div class="closedbets">
+        <h3>Signed bets</h3>
+        <p class="bets">Tiago - 40 - Luis</p>
+        <p class="bets">Tiago - 23 - Alex</p>
+        <p class="bets">Tiago - 503 - Guilherme</p>
+      </div>
+    </div>
+    <div class="rightside">
+      <h2>Team 2</h2>
+      <img
+        class="teamimage"
+        src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Flag_of_Argentina.svg/320px-Flag_of_Argentina.svg.png"
+      />
+      <div class="openbets">
+        <h3>Open bets</h3>
+        <p class="bets">Luis 50</p>
+        <p class="bets">Guilherme 70</p>
+        <p class="bets">Alex 1</p>
+        <p class="bets">Anderson 34</p>
+      </div>
+      <div class="closedbets">
+        <h3>Signed bets</h3>
+      </div>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>
