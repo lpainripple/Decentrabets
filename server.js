@@ -104,8 +104,9 @@ app.delete("/logout", function (request, response) {
   console.log(
     `logging out user ${request.session.username} which is currency logged in: ${request.session.loggedin}`
   );
+  request.flash("message", "User logged out");
+  response.render("login.ejs", { message: request.flash("message") });
   request.session.destroy();
-  response.redirect("/login");
 });
 /********************************** LOGIN END ************************************* */
 

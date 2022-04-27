@@ -86,45 +86,18 @@
         "
         >Decentra</span
       >
-      <span
-        style="
-          float: left;
-          color: #cc0200;
-          font-size: 24px;
-          font-weight: bold;
-          font-style: italic;
-          text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
-        "
-        >bets</span
-      >
-      <div
-        style="
-          float: right;
-          background-color: #0a5493;
-          margin-right: 100px;
-          padding: 10px;
-          margin-top: -7px;
-          border-radius: 3px;
-        "
-      >
-        <span style="color: white; font-family: Roboto">
-          <form method="POST" action="logout?_method=DELETE">
-            <button
-              style="
-                background: none;
-                color: inherit;
-                border: none;
-                padding: 0;
-                font: inherit;
-                cursor: pointer;
-                outline: inherit;
-              "
-              type="submit"
-            >
-              Log out
-            </button>
-          </form></span
-        >
+      <span style="float: left; color: #cc0200; font-size: 24px; font-weight: bold; font-style: italic; text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;">bets</span>
+      <div style="text-align: center; color: white;">Hi <%= user%></div>
+      <div style="float: right; background-color: #0a5493; margin-right: 100px; padding: 10px; margin-top: -7px; border-radius: 3px;">
+        <div>
+          <span style="color: white; font-family: Roboto">
+            <div>
+              <form method="POST" action="logout?_method=DELETE">
+                <button style="background: none; color: inherit; border: none; padding: 0; font: inherit; cursor: pointer; outline: inherit;" type="submit"> Log out </button>
+              </form>
+            </div>
+          </span>
+        </div>
       </div>
     </div>
     <div
