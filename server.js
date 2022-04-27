@@ -9,8 +9,9 @@ const session = require("express-session");
 const flash = require("connect-flash");
 const path = require("path");
 const ejs = require("ejs");
+const methodOverride = require("method-override");
 
-app.use(express.static(__dirname + '/static/img'));
+app.use(express.static(__dirname + "/static/img"));
 
 let configFile = fs.readFileSync(__dirname + "/config.json");
 let config = JSON.parse(configFile);
@@ -42,6 +43,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "/views/static")));
 app.use(flash());
+app.use(methodOverride("_method"));
 
 //sets view engine to read ejs
 app.set("view-engine", "ejs");
@@ -96,6 +98,14 @@ app.post("/login", function (request, response) {
     response.send("Please enter username and password");
     response.end();
   }
+});
+
+app.delete("/logout", function (request, response) {
+  console.log(
+    `logging out user ${request.session.username} which is currency logged in: ${request.session.loggedin}`
+  );
+  request.session.destroy();
+  response.redirect("/login");
 });
 /********************************** LOGIN END ************************************* */
 
@@ -158,53 +168,52 @@ app.post("/register", async function (request, response) {
 
 app.get("/home", function (request, response) {
   if (request.session.loggedin == true) {
-     pool.query(
-    //"SELECT game_id, game_external_id, home_team_id, home_team_name, away_team_id, away_team_name, season_name, category, score_home, score_home_pen_goals, score_away, score_away_pen_goals, begin_datetime, status FROM games",
-    "SELECT * FROM games",
-    (error, results) => {
-      if (error) {
-        throw error;
-      }
-      var games = new Array();
-
-      results.rows.forEach((element) => {
-        console.log(`Found game: ${element.game_id} in the database`);
-
-        var status_color = 'green';
-        if (element.status == 'not started') {
-          status_color = 'gray';
-        } else if (element.status == 'finished') {
-          status_color = '#DA3025';
+    pool.query(
+      //"SELECT game_id, game_external_id, home_team_id, home_team_name, away_team_id, away_team_name, season_name, category, score_home, score_home_pen_goals, score_away, score_away_pen_goals, begin_datetime, status FROM games",
+      "SELECT * FROM games",
+      (error, results) => {
+        if (error) {
+          throw error;
         }
+        var games = new Array();
 
-        var game = {
-          game_id: element.game_id,
-          game_external_id: element.game_external_id,
-          home_team_id: element.home_team_id,
-          home_team_name: element.home_team_name,
-          away_team_id: element.away_team_id,
-          away_team_name: element.away_team_name,
-          season_name: element.season_name,
-          category: element.category,
-          score_home: element.score_home,
-          score_home_pen_goals: element.score_home_pen_goals,
-          score_away: element.score_away,
-          score_away_pen_goals: element.score_away_pen_goals,
-          begin_datetime: element.begin_datetime.toString().slice(0, 16),
-          status: element.status,
-          status_color: status_color
-        };
+        results.rows.forEach((element) => {
+          console.log(`Found game: ${element.game_id} in the database`);
 
-        games.push(game);
-      });
+          var status_color = "green";
+          if (element.status == "not started") {
+            status_color = "gray";
+          } else if (element.status == "finished") {
+            status_color = "#DA3025";
+          }
 
-      response.render("games.ejs", {
-        user: request.session.username,
-        games: games,
-      });
-    }
-  );
+          var game = {
+            game_id: element.game_id,
+            game_external_id: element.game_external_id,
+            home_team_id: element.home_team_id,
+            home_team_name: element.home_team_name,
+            away_team_id: element.away_team_id,
+            away_team_name: element.away_team_name,
+            season_name: element.season_name,
+            category: element.category,
+            score_home: element.score_home,
+            score_home_pen_goals: element.score_home_pen_goals,
+            score_away: element.score_away,
+            score_away_pen_goals: element.score_away_pen_goals,
+            begin_datetime: element.begin_datetime.toString().slice(0, 16),
+            status: element.status,
+            status_color: status_color,
+          };
 
+          games.push(game);
+        });
+
+        response.render("games.ejs", {
+          user: request.session.username,
+          games: games,
+        });
+      }
+    );
   } else {
     response.redirect("/login");
   }
