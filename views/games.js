@@ -9,7 +9,7 @@ function getFixtures(seasonId)
   var currentDate = new Date();
   currentDate.setDate(currentDate.getDate() - 14);
 
-  //champions league season:4200
+  //champions league 2021/2022 season:4200
   var address = "https://football.elenasport.io/v2/seasons/${seasonId}/fixtures?from=" + currentDate.toISOString().slice(0, 10);
 
   httpReq.open("GET", address, false);
@@ -88,24 +88,24 @@ function getFixtures(seasonId)
 
       for(season in seasonIds)
       {
+        //champions league 2021/2022 season: 4200
         const games = getFixtures(season);
-
         for (game in games)
         {
           const result = await pool.request()
-            .input('c1', sql.dat, game.date)
-            .input('c2', sql.VarChar(40), game.id)
-            .input('c3', sql.VarChar(40), game.idHome)
-            .input('c4', sql.VarChar(40), game.homeName)
-            .input('c5', sql.VarChar(40), game.idAway)
-            .input('c6', sql.VarChar(40), game.awayName)
-            .input('c7', sql.VarChar(40), game.status)
-            .input('c8', sql.VarChar(40), game.seasonName)
-            .input('c9', sql.Int(4), game.scoreHome)
-            .input('c10', sql.Int(4), game.scoreAway)
-            .input('c11', sql.Int(4), game.team_home_PEN_goals)
-            .input('c12', sql.Int(4), game.team_away_PEN_goals)
-            .input('c13', sql.VarChar(40), category)
+            .input('c1', Pool.Date, game.date)
+            .input('c2', Pool.VarChar(40), game.id)
+            .input('c3', Pool.VarChar(40), game.idHome)
+            .input('c4', Pool.VarChar(40), game.homeName)
+            .input('c5', Pool.VarChar(40), game.idAway)
+            .input('c6', Pool.VarChar(40), game.awayName)
+            .input('c7', Pool.VarChar(40), game.status)
+            .input('c8', Pool.VarChar(40), game.seasonName)
+            .input('c9', Pool.Int(4), game.scoreHome)
+            .input('c10', Pool.Int(4), game.scoreAway)
+            .input('c11', Pool.Int(4), game.team_home_PEN_goals)
+            .input('c12', Pool.Int(4), game.team_away_PEN_goals)
+            .input('c13', Pool.VarChar(40), category)
             .query('INSERT INTO games (begin_datetime, game_external_id, home_team_id, home_team_name, away_team_id, away_team_name, status, season_name, score_home, score_away, score_home_pen_goals, score_away_pen_goals, category) values(@c1, @c2, @c3, @c4, @c5, @c6, @c7, @c8, @c9, @c10, @c11, @c12, @c13);');
           
             if (result !== null) 
