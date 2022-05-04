@@ -345,6 +345,10 @@ app.get("/internal", function (request, response) {
   response.send(serverinfo);
 });
 
+app.get("/example1", function (request, response) {
+  
+});
+
 /********************************** INTERNAL END ************************************* */
 
 const port = 3000;
