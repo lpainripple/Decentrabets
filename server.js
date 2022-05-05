@@ -345,7 +345,9 @@ app.get("/internal", function (request, response) {
   response.send(serverinfo);
 });
 
-app.get("/example1", function (request, response) {});
+app.get("/example1", function (request, response) {
+  response.render("example1.ejs");
+});
 
 app.get("/example2", function (request, response) {
   response.render("example2.ejs");

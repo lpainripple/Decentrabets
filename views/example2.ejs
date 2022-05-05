@@ -1,13 +1,22 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>Page Title</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <script src="example2.js"></script>
-  </head>
   <body>
     <h1>This is a json fetch via javascript test</h1>
+    <p>
+      Please note that this will only work if it is being accessed using
+      Decentrabets website. A plain html on your local machine trying to use the
+      API will not work due to CORS policy.
+    </p>
+    <p>
+      check console log to see results, also check example2.js to see the
+      javascript code
+    </p>
+    <script>
+      console.log("this is example2");
+
+      fetch("http://localhost:3000/bets")
+        .then((response) => response.json())
+        .then((data) => console.log(data));
+    </script>
   </body>
 </html>
