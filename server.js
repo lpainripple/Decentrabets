@@ -169,7 +169,7 @@ app.post("/register", async function (request, response) {
 
 app.get(["/bets", "/bets/:filter"], function (request, response) {
   var filter = request.params.filter;
-  console.log(`This is the filter ${filter}`);
+  //console.log(`This is the filter ${filter}`);
   var query =
     "select bets.bet_id, bets.bet_initiator, bets.bet_taker, bets.game_id, bets.bet_initiator_team_pick, bets.xrp_amount, bets. bet_status, bets.bet_multiplication, concat(home_team_name,' vs ',away_team_name) as game_title, games.status from bets inner join games on bets.game_id = games.game_id ";
   if (filter == "upcominggames") {
@@ -191,7 +191,7 @@ app.get(["/bets", "/bets/:filter"], function (request, response) {
           bet_taker: element.bet_taker,
           game_id: element.game_id,
           bet_initiator_team_pick: element.bet_initiator_team_pick,
-          xrp_amoount: element.xrp_amount,
+          xrp_amount: element.xrp_amount,
           bet_status: element.bet_status,
           bet_multiplication: element.bet_multiplication,
           game_title: element.game_title,
