@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <h1>Table based on JSON data using xml http request (xhr).</h1>
+    <p>
+      This is using XMLHttpRequest. Check console log to see results, also check
+      example1.ejs to see the javascript code
+    </p>
+    <p>
+      Please note that this will only work if it is being accessed using
+      Decentrabets website. A plain html on your local machine trying to use the
+      API will not work due to CORS policy.
+    </p>
+
+    <p id="demo"></p>
+
+    <script>
+      console.log("this is example1");
+
+      const dbParam = JSON.stringify({ table: "bets", limit: 20 });
+      var xhr = new XMLHttpRequest();
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState == XMLHttpRequest.DONE) {
+          const myObj = JSON.parse(this.responseText);
+          let text = "<table border='1'>";
+          text +=
+            "<tr> <th>Bet Initiator</th> <th>Bet taker</th> <th>game title</th> <th>XRP amount</th> </tr>";
+          for (let x in myObj) {
+            text += "<tr><td>" + myObj[x].bet_initiator + "</td>";
+            text += "<td>" + myObj[x].bet_taker + "</td>";
+            text += "<td>" + myObj[x].game_title + "</td>";
+            text += "<td>" + myObj[x].xrp_amount + "</td></tr>";
+          }
+          text += "</table>";
+          document.getElementById("demo").innerHTML = text;
+        }
+      };
+      xhr.open("GET", "http://localhost:3000/bets");
+      //you can send parameters here
+      xhr.send();
+      //xmlhttp.send();
+    </script>
+  </body>
+</html>

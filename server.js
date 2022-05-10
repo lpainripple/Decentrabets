@@ -9,8 +9,10 @@ const session = require("express-session");
 const flash = require("connect-flash");
 const path = require("path");
 const ejs = require("ejs");
+const methodOverride = require("method-override");
+const os = require("os");
 
-app.use(express.static(__dirname + '/static/img'));
+app.use(express.static(__dirname + "/static/img"));
 
 let configFile = fs.readFileSync(__dirname + "/config.json");
 let config = JSON.parse(configFile);
@@ -42,6 +44,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "/views/static")));
 app.use(flash());
+app.use(methodOverride("_method"));
 
 //sets view engine to read ejs
 app.set("view-engine", "ejs");
@@ -98,6 +101,15 @@ app.post("/login", function (request, response) {
     response.end();
   }
 });
+
+app.delete("/logout", function (request, response) {
+  console.log(
+    `logging out user ${request.session.username} which is currency logged in: ${request.session.loggedin}`
+  );
+  request.flash("message", "User logged out");
+  response.render("login.ejs", { message: request.flash("message") });
+  request.session.destroy();
+});
 /********************************** LOGIN END ************************************* */
 
 /********************************** REGISTER ************************************* */
@@ -136,9 +148,8 @@ app.post("/register", async function (request, response) {
             throw error;
           }
         } else {
-          console.log("user added to database:" + results.response);
           console.log(
-            `The user was added: ${username} and password used: ${password} with the email: ${email}`
+            `The user was added: ${username} and password used: ${password} with the email: ${email}. Response: "${results.response}`
           );
 
           //Redirect to homepage
@@ -155,58 +166,136 @@ app.post("/register", async function (request, response) {
 });
 /********************************** REGISTER END ************************************* */
 
+/********************************** BETS ************************************* */
+
+app.get(["/bets", "/bets/:filter"], function (request, response) {
+  var filter = request.params.filter;
+  //console.log(`This is the filter ${filter}`);
+  var query =
+    "select bets.bet_id, bets.bet_initiator, bets.bet_taker, bets.game_id, bets.bet_initiator_team_pick, bets.xrp_amount, bets. bet_status, bets.bet_multiplication, concat(home_team_name,' vs ',away_team_name) as game_title, games.status from bets inner join games on bets.game_id = games.game_id ";
+  if (filter == "upcominggames") {
+    query = query + " where begin_datetime >= current_timestamp";
+  }
+  if (filter == "pastgames") {
+    query = query + " where begin_datetime <= current_timestamp";
+  }
+  pool.query(query, function (error, results) {
+    if (error) {
+      throw error;
+    } else {
+      var bets = new Array();
+
+      results.rows.forEach((element) => {
+        const bet = {
+          bet_id: element.bet_id,
+          bet_initiator: element.bet_initiator,
+          bet_taker: element.bet_taker,
+          game_id: element.game_id,
+          bet_initiator_team_pick: element.bet_initiator_team_pick,
+          xrp_amount: element.xrp_amount,
+          bet_status: element.bet_status,
+          bet_multiplication: element.bet_multiplication,
+          game_title: element.game_title,
+          game_status: element.game_status,
+        };
+
+        bets.push(bet);
+      });
+
+      response.send(bets);
+    }
+  });
+});
+
+app.post("/bets", function (request, response) {
+  const winner = request.body.winner;
+  const bet_amount = request.body.bet_amount;
+  const multiplier = request.body.multiplier;
+  const game_id = request.body.game_id;
+  const bet_initiator = request.body.bet_initiator;
+
+  pool.query(
+    "INSERT into bets (bet_initiator, game_id, bet_initiator_team_pick, xrp_amount, bet_status, bet_multiplication);",
+    [bet_initiator, game_id, winner, bet_amount, "active", multiplier],
+    function (error, results) {
+      if (error) {
+        throw error;
+      } else {
+        console.log(
+          `Bet created in database. Bet taker: ${bet_initiator}. Amount: ${bet_amount} for game id: ${game_id}`
+        );
+      }
+    }
+  );
+});
+
+app.delete(["/bets", "/bets/:id"], function (request, response) {
+  var id = request.params.id;
+
+  pool.query("select delete_bet_id($1);", [id], function (error, results) {
+    if (error) {
+      console.log(`This is the error: ${error}`);
+      throw error;
+    } else {
+      response.send(results.rows[0].delete_bet_id);
+      response.status(200).end();
+    }
+  });
+});
+
+/********************************** BETS END ************************************* */
+
 /*********************************** HOME ************************************* */
 
 app.get("/home", function (request, response) {
   if (request.session.loggedin == true) {
-     pool.query(
-    //"SELECT game_id, game_external_id, home_team_id, home_team_name, away_team_id, away_team_name, season_name, category, score_home, score_home_pen_goals, score_away, score_away_pen_goals, begin_datetime, status FROM games",
-    "SELECT * FROM games",
-    (error, results) => {
-      if (error) {
-        throw error;
-      }
-      var games = new Array();
-
-      results.rows.forEach((element) => {
-        console.log(`Found game: ${element.game_id} in the database`);
-
-        var status_color = 'green';
-        if (element.status == 'not started') {
-          status_color = 'gray';
-        } else if (element.status == 'finished') {
-          status_color = '#DA3025';
+    pool.query(
+      //"SELECT game_id, game_external_id, home_team_id, home_team_name, away_team_id, away_team_name, season_name, category, score_home, score_home_pen_goals, score_away, score_away_pen_goals, begin_datetime, status FROM games",
+      "SELECT * FROM games",
+      (error, results) => {
+        if (error) {
+          throw error;
         }
+        var games = new Array();
 
-        var game = {
-          game_id: element.game_id,
-          game_external_id: element.game_external_id,
-          home_team_id: element.home_team_id,
-          home_team_name: element.home_team_name,
-          away_team_id: element.away_team_id,
-          away_team_name: element.away_team_name,
-          season_name: element.season_name,
-          category: element.category,
-          score_home: element.score_home,
-          score_home_pen_goals: element.score_home_pen_goals,
-          score_away: element.score_away,
-          score_away_pen_goals: element.score_away_pen_goals,
-          begin_datetime: element.begin_datetime.toString().slice(0, 16),
-          status: element.status,
-          status_color: status_color
-        };
+        results.rows.forEach((element) => {
+          console.log(`Found game: ${element.game_id} in the database`);
 
-        games.push(game);
-      });
+          var status_color = "green";
+          if (element.status == "not started") {
+            status_color = "gray";
+          } else if (element.status == "finished") {
+            status_color = "#DA3025";
+          }
 
-      response.render("games.ejs", {
-        user: request.session.username,
-        balance: request.session.balance,
-        games: games,
-      });
-    }
-  );
+          var game = {
+            game_id: element.game_id,
+            game_external_id: element.game_external_id,
+            home_team_id: element.home_team_id,
+            home_team_name: element.home_team_name,
+            away_team_id: element.away_team_id,
+            away_team_name: element.away_team_name,
+            season_name: element.season_name,
+            category: element.category,
+            score_home: element.score_home,
+            score_home_pen_goals: element.score_home_pen_goals,
+            score_away: element.score_away,
+            score_away_pen_goals: element.score_away_pen_goals,
+            begin_datetime: element.begin_datetime.toString().slice(0, 16),
+            status: element.status,
+            status_color: status_color,
+          };
 
+          games.push(game);
+        });
+
+        response.render("games.ejs", {
+          user: request.session.username,
+          balance: request.session.balance,
+          games: games,
+        });
+      }
+    );
   } else {
     response.redirect("/login");
   }
@@ -217,6 +306,56 @@ app.get("/home", function (request, response) {
 /********************************** FUNCTIONS ************************************* */
 
 /********************************** FUNCTIONS END ************************************* */
+
+/********************************** INTERNAL ************************************* */
+
+app.get("/internal", function (request, response) {
+  var cpu_s = os.cpus();
+  var no_of_logical_core = 0;
+  cpu_s.forEach((element) => {
+    no_of_logical_core++;
+  });
+
+  const total_memory = os.totalmem();
+  var total_mem_in_kb = total_memory / 1024;
+  var total_mem_in_mb = total_mem_in_kb / 1024;
+
+  total_mem_in_kb = Math.floor(total_mem_in_kb);
+  total_mem_in_mb = Math.floor(total_mem_in_mb);
+
+  const free_memory = os.freemem();
+  var free_mem_in_kb = free_memory / 1024;
+  var free_mem_in_mb = free_mem_in_kb / 1024;
+
+  free_mem_in_kb = Math.floor(free_mem_in_kb);
+  free_mem_in_mb = Math.floor(free_mem_in_mb);
+
+  const serverinfo = {
+    hostname: os.hostname(),
+    platform: os.platform(),
+    architecture: os.arch(),
+    version: os.version(),
+    cpus: no_of_logical_core,
+    total_memory: total_mem_in_mb,
+    free_memory: free_mem_in_mb,
+    os_uptime_seconds: os.uptime(),
+    os_uptime_minutes: os.uptime() / 60,
+    os_uptime_hours: os.uptime() / 3600,
+    os_uptime_days: os.uptime() / 86400,
+  };
+
+  response.send(serverinfo);
+});
+
+app.get("/example1", function (request, response) {
+  response.render("example1.ejs");
+});
+
+app.get("/example2", function (request, response) {
+  response.render("example2.ejs");
+});
+
+/********************************** INTERNAL END ************************************* */
 
 const port = 3000;
 app.listen(port, function (request, response) {

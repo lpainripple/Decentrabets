@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <h1>This is a json fetch via javascript test</h1>
+    <p>
+      check console log to see results, also check example2.ejs to see the
+      javascript code
+    </p>
+    <p>
+      Please note that this will only work if it is being accessed using
+      Decentrabets website. A plain html on your local machine trying to use the
+      API will not work due to CORS policy.
+    </p>
+    <p id="demo"></p>
+    <script>
+      //   console.log("this is example2");
+
+      //   fetch("http://localhost:3000/bets")
+      //     .then((response) => response.json())
+      //     .then((data) => console.log(data));
+
+      console.log("this is example2");
+
+      fetch("http://localhost:3000/bets")
+        .then((response) => response.json())
+        .then((data) => addTable(data));
+
+      //const myObj = response.json();
+
+      function addTable(data) {
+        console.log("this was called");
+        console.log(data);
+        let text = "<table border='1'>";
+        text +=
+          "<tr> <th>Bet Initiator</th> <th>Bet taker</th> <th>game title</th> <th>XRP amount</th> </tr>";
+        for (let x in data) {
+          text += "<tr><td>" + data[x].bet_initiator + "</td>";
+          text += "<td>" + data[x].bet_taker + "</td>";
+          text += "<td>" + data[x].game_title + "</td>";
+          text += "<td>" + data[x].xrp_amount + "</td></tr>";
+        }
+        text += "</table>";
+        document.getElementById("demo").innerHTML = text;
+      }
+    </script>
+  </body>
+</html>
