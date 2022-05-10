@@ -96,6 +96,21 @@ CREATE TABLE Bets (
 insert into bets (bet_initiator, bet_taker, game_id, bet_initiator_team_pick, xrp_amount, expiration_date, bet_status, bet_multiplication)
 values ('Luis', 'Marcel', 2, 'Chelsea', 20,  current_timestamp - interval '3 days', 'active', 1)
 ,		('Luis', null, 2, 'Chelsea', 30,  current_timestamp - interval '3 days', 'active', 1)
+,		('tiago', null, 3, 'Man City', 99, null,  'active', 2)
 
 
 select * from bets
+
+--------------------------------------------------------------------------------------------------------------------------------
+CREATE function delete_bet_id(id int)
+RETURNS varchar AS
+$$
+BEGIN
+  IF (select count(bet_id) from bets where bet_id = id and bet_taker is null) > 0 then
+  	delete from bets where bet_id = id;
+  	RETURN concat('Bet with id: ',id, ' deleted') ;
+  ELSE
+  	return 'Bet not found or already commited';
+  END IF;
+END;
+$$ LANGUAGE plpgsql;
