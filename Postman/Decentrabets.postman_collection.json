@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "1d52784d-f593-4dbe-ac57-f47525dfd77e",
+		"_postman_id": "ff27e032-d737-44a5-97f6-a7a2c0743cb4",
 		"name": "Decentrabets",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -198,7 +198,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:3000/bets/pastgames",
+					"raw": "http://localhost:3000/bets/upcominggames?bet_initiator=tiago&bet_taker=anderson",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -206,7 +206,17 @@
 					"port": "3000",
 					"path": [
 						"bets",
-						"pastgames"
+						"upcominggames"
+					],
+					"query": [
+						{
+							"key": "bet_initiator",
+							"value": "tiago"
+						},
+						{
+							"key": "bet_taker",
+							"value": "anderson"
+						}
 					]
 				},
 				"description": "test get   "
@@ -218,6 +228,15 @@
 			"request": {
 				"method": "POST",
 				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\"winner\": \"Chelsea\",\r\n\"bet_amount\": \"13\",\r\n   \"multiplier\": \"1\",\r\n   \"game_id\": \"2\",\r\n   \"bet_initiator\": \"tiago\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
 				"url": {
 					"raw": "http://localhost:3000/bets",
 					"protocol": "http",
