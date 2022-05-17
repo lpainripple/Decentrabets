@@ -63,7 +63,7 @@ app.get("/login", function (request, response) {
 app.post("/login", function (request, response) {
   let username = request.body.username.toLowerCase();
   let password = request.body.password;
-  
+
   console.log(`attempting to login for user: ${username}...`);
 
   if (username && password) {
@@ -170,16 +170,20 @@ app.post("/register", async function (request, response) {
 
 app.get(["/bets", "/bets/:filter"], function (request, response) {
   var filter = request.params.filter;
+  const bet_initiator = request.query.bet_initiator;
+  const bet_taker = request.query.bet_taker;
+  const begin_datetime = request.query.begin_datetime;
   //console.log(`This is the filter ${filter}`);
-  var query =
-    "select bets.bet_id, bets.bet_initiator, bets.bet_taker, bets.game_id, bets.bet_initiator_team_pick, bets.xrp_amount, bets. bet_status, bets.bet_multiplication, concat(home_team_name,' vs ',away_team_name) as game_title, games.status from bets inner join games on bets.game_id = games.game_id ";
   if (filter == "upcominggames") {
-    query = query + " where begin_datetime >= current_timestamp";
+    query = "select * from get_bets_after_date($1, $2, CURRENT_DATE)";
   }
   if (filter == "pastgames") {
-    query = query + " where begin_datetime <= current_timestamp";
+    query = "select * from get_bets_before_date($1, $2, CURRENT_DATE)";
   }
-  pool.query(query, function (error, results) {
+  if (filter != "pastgames" && filter != "upcominggames") {
+    query = "select * from get_bets_before_date($1, $2, null)";
+  }
+  pool.query(query, [bet_initiator, bet_taker], function (error, results) {
     if (error) {
       throw error;
     } else {
@@ -215,7 +219,7 @@ app.post("/bets", function (request, response) {
   const bet_initiator = request.body.bet_initiator;
 
   pool.query(
-    "INSERT into bets (bet_initiator, game_id, bet_initiator_team_pick, xrp_amount, bet_status, bet_multiplication);",
+    "INSERT into bets (bet_initiator, game_id, bet_initiator_team_pick, xrp_amount, bet_status, bet_multiplication) VALUES ($1, $2, $3, $4, $5, $6);",
     [bet_initiator, game_id, winner, bet_amount, "active", multiplier],
     function (error, results) {
       if (error) {
@@ -224,6 +228,7 @@ app.post("/bets", function (request, response) {
         console.log(
           `Bet created in database. Bet taker: ${bet_initiator}. Amount: ${bet_amount} for game id: ${game_id}`
         );
+        response.status(200).end();
       }
     }
   );
@@ -355,6 +360,18 @@ app.get("/example2", function (request, response) {
   response.render("example2.ejs");
 });
 
+app.get("/example3", function (request, response) {
+  console.log(request.query);
+  console.log(request.query.name);
+  console.log(request.query.age);
+
+  const person = {
+    name: request.query.name,
+    age: request.query.age,
+  };
+
+  response.render("example3.ejs", { user: person });
+});
 /********************************** INTERNAL END ************************************* */
 
 const port = 3000;
