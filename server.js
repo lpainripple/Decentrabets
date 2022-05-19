@@ -10,8 +10,9 @@ const flash = require("connect-flash");
 const path = require("path");
 const ejs = require("ejs");
 const methodOverride = require("method-override");
+const register = require("./register")
 
-app.use(express.static(__dirname + "/static/img"));
+//app.use(express.static(__dirname + "/static/img"));
 
 let configFile = fs.readFileSync(__dirname + "/config.json");
 let config = JSON.parse(configFile);
@@ -51,8 +52,10 @@ app.set("view-engine", "ejs");
 //app.use(express.urlencoded({extended: false}));
 
 app.get("/", function (request, response) {
-  response.render("index.ejs", { test: "This is how you send data to html" });
+  response.render("login.ejs", { message: request.flash("message") });
 });
+
+app.use("/register",register);
 
 /********************************** LOGIN ************************************* */
 app.get("/login", function (request, response) {
