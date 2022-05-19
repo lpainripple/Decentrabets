@@ -1,0 +1,277 @@
+{
+	"info": {
+		"_postman_id": "ff27e032-d737-44a5-97f6-a7a2c0743cb4",
+		"name": "Decentrabets",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get html login",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"login"
+					]
+				},
+				"description": "test get   "
+			},
+			"response": []
+		},
+		{
+			"name": "login POST",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "fNsRlxKVVVGRtu8o0U7ZvGeUEAWeKtcX",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "payment_user_client",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "luis",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "a",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3000/login?username=luis&password=a",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"login"
+					],
+					"query": [
+						{
+							"key": "username",
+							"value": "luis"
+						},
+						{
+							"key": "password",
+							"value": "a"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "fNsRlxKVVVGRtu8o0U7ZvGeUEAWeKtcX",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "payment_user_client",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/logout",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"logout"
+					],
+					"query": [
+						{
+							"key": "username",
+							"value": "luis",
+							"disabled": true
+						},
+						{
+							"key": "password",
+							"value": "a",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "home",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"login"
+					]
+				},
+				"description": "test get   "
+			},
+			"response": []
+		},
+		{
+			"name": "Get internal",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/internal",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"internal"
+					]
+				},
+				"description": "test get   "
+			},
+			"response": []
+		},
+		{
+			"name": "Get bets",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/bets/upcominggames?bet_initiator=tiago&bet_taker=anderson",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"bets",
+						"upcominggames"
+					],
+					"query": [
+						{
+							"key": "bet_initiator",
+							"value": "tiago"
+						},
+						{
+							"key": "bet_taker",
+							"value": "anderson"
+						}
+					]
+				},
+				"description": "test get   "
+			},
+			"response": []
+		},
+		{
+			"name": "Add Bet",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\"winner\": \"Chelsea\",\r\n\"bet_amount\": \"13\",\r\n   \"multiplier\": \"1\",\r\n   \"game_id\": \"2\",\r\n   \"bet_initiator\": \"tiago\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/bets",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"bets"
+					]
+				},
+				"description": "test get   "
+			},
+			"response": []
+		},
+		{
+			"name": "Delete bets",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/bets/7",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"bets",
+						"7"
+					]
+				},
+				"description": "test get   "
+			},
+			"response": []
+		}
+	]
+}

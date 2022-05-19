@@ -96,6 +96,49 @@ CREATE TABLE Bets (
 insert into bets (bet_initiator, bet_taker, game_id, bet_initiator_team_pick, xrp_amount, expiration_date, bet_status, bet_multiplication)
 values ('Luis', 'Marcel', 2, 'Chelsea', 20,  current_timestamp - interval '3 days', 'active', 1)
 ,		('Luis', null, 2, 'Chelsea', 30,  current_timestamp - interval '3 days', 'active', 1)
+,		('tiago', null, 3, 'Man City', 99, null,  'active', 2)
 
 
 select * from bets
+
+--------------------------------------------------------------------------------------------------------------------------------
+CREATE function delete_bet_id(id int)
+RETURNS varchar AS
+$$
+BEGIN
+  IF (select count(bet_id) from bets where bet_id = id and bet_taker is null) > 0 then
+  	delete from bets where bet_id = id;
+  	RETURN concat('Bet with id: ',id, ' deleted') ;
+  ELSE
+  	return 'Bet not found or already commited';
+  END IF;
+END;
+$$ LANGUAGE plpgsql;
+--------------------------------------------------------------------------------------------------------------------------------
+CREATE function get_bets_before_date(initiator varchar, taker varchar, game_time date)
+returns TABLE(bet_id int, bet_initiator varchar, bet_taker varchar, game_id int, bet_initiator_team_pick varchar, xrp_amount NUMERIC (15, 6), bet_status varchar, bet_multiplication NUMERIC (10,4), game_title varchar, game_status varchar) as
+$$
+  	select bets.bet_id, bets.bet_initiator, bets.bet_taker, bets.game_id, bets.bet_initiator_team_pick, bets.xrp_amount, bets. bet_status, bets.bet_multiplication, concat(home_team_name,' vs ',away_team_name) as game_title, games.status 
+	from bets 
+	inner join games on bets.game_id = games.game_id
+	where coalesce (bets.bet_initiator, 'null') = coalesce(COALESCE(initiator,bets.bet_initiator),'null')
+	and coalesce(bets.bet_taker, 'null') = coalesce(COALESCE(taker,bets.bet_taker), 'null')
+	and coalesce(games.begin_datetime,current_timestamp ) <= coalesce(COALESCE(game_time, games.begin_datetime),current_timestamp )
+
+$$ LANGUAGE sql;
+
+CREATE function get_bets_after_date(initiator varchar, taker varchar, game_time date)
+returns TABLE(bet_id int, bet_initiator varchar, bet_taker varchar, game_id int, bet_initiator_team_pick varchar, xrp_amount NUMERIC (15, 6), bet_status varchar, bet_multiplication NUMERIC (10,4), game_title varchar, game_status varchar) as
+$$
+  	select bets.bet_id, bets.bet_initiator, bets.bet_taker, bets.game_id, bets.bet_initiator_team_pick, bets.xrp_amount, bets. bet_status, bets.bet_multiplication, concat(home_team_name,' vs ',away_team_name) as game_title, games.status 
+	from bets 
+	inner join games on bets.game_id = games.game_id
+	where coalesce (bets.bet_initiator, 'null') = coalesce(COALESCE(initiator,bets.bet_initiator),'null')
+	and coalesce(bets.bet_taker, 'null') = coalesce(COALESCE(taker,bets.bet_taker), 'null')
+	and coalesce(games.begin_datetime,current_timestamp ) >= coalesce(COALESCE(game_time, games.begin_datetime),current_timestamp )
+
+$$ LANGUAGE sql;
+
+select *
+from get_bets_after_date('tiago', 'anderson', CURRENT_DATE)
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
