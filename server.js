@@ -10,10 +10,16 @@ const flash = require("connect-flash");
 const path = require("path");
 const ejs = require("ejs");
 const methodOverride = require("method-override");
-const register = require("./register")
+const register = require("./routes/register")
 const os = require("os");
 
-//app.use(express.static(__dirname + "/static/img"));
+app.use(express.json());
+//allow us to access request variables in the post methods
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, "/views/static")));
+app.use(express.static("node_modules/bootstrap/dist")) // bootstraps static files
+app.use(flash());
+app.use(methodOverride("_method"));
 
 let configFile = fs.readFileSync(__dirname + "/config.json");
 let config = JSON.parse(configFile);
@@ -40,12 +46,6 @@ app.use(
     //cookie:
   })
 );
-app.use(express.json());
-//allow us to access request variables in the post methods
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, "/views/static")));
-app.use(flash());
-app.use(methodOverride("_method"));
 
 //sets view engine to read ejs
 app.set("view-engine", "ejs");
@@ -114,60 +114,6 @@ app.delete("/logout", function (request, response) {
   request.session.destroy();
 });
 /********************************** LOGIN END ************************************* */
-
-/********************************** REGISTER ************************************* */
-app.get("/register", function (request, response) {
-  if (request.session.loggedin == true) {
-    console.log(
-      `user ${request.session.username} tried to access register page... already logged in`
-    );
-    response.redirect("/home");
-  } else {
-    response.render("register.ejs", { message: request.flash("message") });
-  }
-});
-
-//this function is asyncronous in case an encryption method is used
-app.post("/register", async function (request, response) {
-  //able to access because of app.use(expres...
-  try {
-    //const hashedPassword = await bcrypt.hash(request.body.password, 10);
-    const username = request.body.username.toLowerCase();
-    const email = request.body.email;
-    //const password = hashedPassword;
-    const password = request.body.password;
-
-    pool.query(
-      "INSERT into USERS (user_name, pass, address, email, balance) values ($1, $2, '', $3, 0);",
-      [username, password, email],
-      (error, results) => {
-        if (error) {
-          if (error.code == 23505) {
-            console.log("user already exists...");
-            request.flash("message", "This user already exists");
-            response.redirect("/register");
-            //response.send(`The user ${username} already exists`);
-          } else {
-            throw error;
-          }
-        } else {
-          console.log(
-            `The user was added: ${username} and password used: ${password} with the email: ${email}. Response: "${results.response}`
-          );
-
-          //Redirect to homepage
-          response.redirect("/login");
-        }
-      }
-    );
-
-    //TODO: CREATE WALLET
-  } catch (exception) {
-    response.redirect("/register");
-    console.log(exception);
-  }
-});
-/********************************** REGISTER END ************************************* */
 
 /********************************** BETS ************************************* */
 
