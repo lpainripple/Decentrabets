@@ -10,19 +10,19 @@ const flash = require("connect-flash");
 const path = require("path");
 const ejs = require("ejs");
 const methodOverride = require("method-override");
-const register = require("./routes/register")
+const register = require("./routes/register");
+const profile = require("./routes/profile");
 const os = require("os");
+let config = require('./config.json')
 
 app.use(express.json());
 //allow us to access request variables in the post methods
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, "/views/static")));
 app.use(express.static("node_modules/bootstrap/dist")) // bootstraps static files
+app.use(express.static("views/static"));
 app.use(flash());
 app.use(methodOverride("_method"));
 
-let configFile = fs.readFileSync(__dirname + "/config.json");
-let config = JSON.parse(configFile);
 
 //put in the config file
 const pool = new Pool({
@@ -30,12 +30,7 @@ const pool = new Pool({
   host: config.database.host,
   database: config.database.database,
   password: config.database.password,
-  port: config.database.port,
-  // user: "decentrabets",
-  // host: "decentrabets.ddns.net",
-  // database: "decentrabets",
-  // password: "q1w2e3",
-  // port: "5432",
+  port: config.database.port
 });
 
 app.use(
@@ -57,6 +52,7 @@ app.get("/", function (request, response) {
 });
 
 app.use("/register",register);
+app.use("/profile",profile);
 
 /********************************** LOGIN ************************************* */
 app.get("/login", function (request, response) {
