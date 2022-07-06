@@ -3,7 +3,7 @@
 const Pool = require('pg').Pool
 const fs = require('fs')
 
-let configFile = fs.readFileSync(__dirname+'/config.json')
+let configFile = fs.readFileSync(__dirname+'/config.production.json')
 let dbconfig = JSON.parse(configFile);
 
 const pool = new Pool({

@@ -1,14 +1,17 @@
-const express = require('express');
+import {Request, Response} from 'express';
+import express from "express";
 const router = express.Router();
+import User from "../config/user";
 
 // middleware that is specific to this router
-router.use((req, res, next) => {
+router.use((req: Request, res: Response, next) => {
     console.log('Time: ', Date.now())
     next()
 })
 
 router.get("/", function (request, response) {
-    if (request.session.loggedin == true) {
+    let user:User | undefined = request.session.user;
+    if (request.session.user) {
         console.log(
             `user ${request.session.username} tried to access register page... already logged in`
         );

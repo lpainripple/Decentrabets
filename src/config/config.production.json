@@ -2,7 +2,7 @@
   "database": {
     "host": "201.35.229.252",
     "database": "decentrabets",
-    "username": "decentrabets",
+    "user": "decentrabets",
     "password": "q1w2e3",
     "port": "5432"
   },

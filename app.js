@@ -1,3 +1,4 @@
+/* eslint-disable */
 const express = require("express");
 const app = express();
 //const bcrypt = require("bcrypt");
@@ -5,24 +6,23 @@ const res = require("express/lib/response");
 const Pool = require("pg").Pool;
 const fs = require("fs");
 const session = require("express-session");
-//const flash = require("express-flash");
-const flash = require("connect-flash");
+const flash = require("express-flash");
 const path = require("path");
 const ejs = require("ejs");
 const methodOverride = require("method-override");
-const register = require("./routes/register");
+const register = require("./src/register/register");
 const profile = require("./routes/profile");
 const os = require("os");
-let config = require('./config.json')
+let config = require('./src/config/config.production.json')
+import Index from './src/config/user';
 
 app.use(express.json());
 //allow us to access request variables in the post methods
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("node_modules/bootstrap/dist")) // bootstraps static files
-app.use(express.static("views/static"));
+app.use(express.static("public"));
 app.use(flash());
 app.use(methodOverride("_method"));
-
 
 //put in the config file
 const pool = new Pool({
@@ -114,25 +114,22 @@ app.delete("/logout", function (request, response) {
 /********************************** BETS ************************************* */
 
 app.get(["/bets", "/bets/:filter"], function (request, response) {
-  var filter = request.params.filter;
+  let filter = request.params.filter;
   const bet_initiator = request.query.bet_initiator;
   const bet_taker = request.query.bet_taker;
   const begin_datetime = request.query.begin_datetime;
   //console.log(`This is the filter ${filter}`);
+  let query = "select * from get_bets_before_date($1, $2, null)";
   if (filter == "upcominggames") {
     query = "select * from get_bets_after_date($1, $2, CURRENT_DATE)";
-  }
-  if (filter == "pastgames") {
+  } else  if (filter == "pastgames") {
     query = "select * from get_bets_before_date($1, $2, CURRENT_DATE)";
-  }
-  if (filter != "pastgames" && filter != "upcominggames") {
-    query = "select * from get_bets_before_date($1, $2, null)";
   }
   pool.query(query, [bet_initiator, bet_taker], function (error, results) {
     if (error) {
       throw error;
     } else {
-      var bets = new Array();
+      let bets = new Array();
 
       results.rows.forEach((element) => {
         const bet = {

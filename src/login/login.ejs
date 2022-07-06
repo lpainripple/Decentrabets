@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,minimum-scale=1" />
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Righteous&display=swap');
+    </style>
+    <title>Login</title>
+    <link href="./login.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="/login.js"></script>
+  </head>
+  <body>
+
+    <div class="title">
+      <div id="bimage" class="bimage"></div>
+      <h2 class="mask">DECENTRABETS</h2>
+      <h2 id="h2">DECENTRABETS</h2>
+      <h2 id="grad">DECENTRABETS</h2>
+    </div>
+
+<!--
+    <div style="text-align: center">
+      <div style="display: inline-block" style="color: white">
+        <% if (message.length > 0) { %>
+        <div style="color: white"><%= message %></div>
+        <% } %>
+      </div>
+    </div>
+-->
+
+    <div class="panel">
+      <form id="login" action="/login" method="post">
+        <div class="cover"><input type="text" name="username" placeholder="Username" required></div>
+        <div class="cover"><input type="password" name="password" placeholder="Password" required></div>
+        <div class="coverbutton"><button type="submit">&#128181;</button></div>
+      </form>
+    </div>
+    <div class="coverbutton signup" onclick="register();"><button onclick="">&#9997;</button></div>
+
+
+  </body>
+</html>
